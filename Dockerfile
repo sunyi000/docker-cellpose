@@ -2,13 +2,14 @@ FROM jlesage/baseimage-gui:ubuntu-22.04-v4.5.2 AS build
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ Europe/Berlin
-ENV QT_XCB_NO_MITSHM=1 
+ENV QT_XCB_NO_MITSHM 1 
 ENV NVIDIA_VISIBLE_DEVICES "all",
 ENV NVIDIA_DRIVER_CAPABILITIES "compute,utility"
 ENV LANG en_US.UTF-8 \
     LC_ALL en_US.UTF-8 \
     LANGUAGE en_US:en  \
-    NUMBA_CACHE_DIR=/tmp
+    NUMBA_CACHE_DIR /tmp
+ENV HOME /config
 
 RUN apt-get update -y && apt-get install -qqy build-essential 
 
@@ -34,6 +35,7 @@ RUN apt-get install -y -q --no-install-recommends \
             locales \
             libarchive-dev \
             cmake \
+            libxcb-cursor0 \
             unzip &&  apt-get clean
 
 
@@ -54,7 +56,7 @@ ENV LD_LIBRARY_PATH "/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
 
 RUN conda install mamba -n base -c conda-forge 
 
-RUN mamba create --name cellpose python=3.8 pytorch-gpu cudatoolkit=11.2 -c conda-forge  
+RUN mamba create --name cellpose --yes python=3.8 pytorch-gpu cudatoolkit=11.2 -c conda-forge  
 RUN /opt/conda/envs/cellpose/bin/pip install cellpose[gui]
 
 EXPOSE 5800
@@ -68,5 +70,5 @@ ENV KEEP_APP_RUNNING=0
 
 ENV TAKE_CONFIG_OWNERSHIP=1
 
-
 WORKDIR /config
+

@@ -9,7 +9,7 @@ ENV LANG en_US.UTF-8 \
     LC_ALL en_US.UTF-8 \
     LANGUAGE en_US:en  \
     NUMBA_CACHE_DIR /tmp
-ENV HOME /config/home
+ENV HOME /config
 
 RUN apt-get update -y && apt-get install -qqy build-essential 
 

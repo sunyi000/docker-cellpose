@@ -45,9 +45,9 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
 
 WORKDIR /tmp
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
-    && rm -f Miniconda3-latest-Linux-x86_64.sh 
+RUN wget https://github.com/conda-forge/miniforge/releases/download/24.7.1-0/Miniforge3-24.7.1-0-Linux-x86_64.sh\
+    && bash Miniforge3-24.7.1-0-Linux-x86_64.sh -b -p /opt/conda \
+    && rm -f Miniforge3-24.7.1-0-Linux-x86_64.sh 
 
 ENV CONDA_BIN_PATH="/opt/conda/bin"
 ENV PATH $CONDA_BIN_PATH:$PATH
@@ -56,8 +56,11 @@ ENV LD_LIBRARY_PATH "/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
 
 RUN conda install mamba -n base -c conda-forge 
 
-RUN mamba create --name cellpose --yes python=3.8 pytorch-gpu cudatoolkit=11.2 -c conda-forge  
+RUN mamba create --name cellpose --yes python=3.9 pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.3 mkl==2024.0 -c pytorch -c conda-forge -c bioconda
 RUN /opt/conda/envs/cellpose/bin/pip install cellpose[gui]
+
+COPY download_cellpose_models.py /
+RUN /opt/conda/envs/cellpose/bin/python /download_cellpose_models.py
 
 EXPOSE 5800
 

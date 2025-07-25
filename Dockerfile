@@ -1,4 +1,4 @@
-FROM jlesage/baseimage-gui:ubuntu-22.04-v4.5.2 AS build
+FROM jlesage/baseimage-gui:ubuntu-22.04-v4.9.0 AS build
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ Europe/Berlin
@@ -9,7 +9,8 @@ ENV LANG en_US.UTF-8 \
     LC_ALL en_US.UTF-8 \
     LANGUAGE en_US:en  \
     NUMBA_CACHE_DIR /tmp
-#ENV HOME /config
+
+USER root
 
 RUN apt-get update -y && apt-get install -qqy build-essential 
 
@@ -32,6 +33,7 @@ RUN apt-get install -y -q --no-install-recommends \
             bzip2 \
             ca-certificates \
             curl \
+            libxcb-cursor0 \
             locales \
             libarchive-dev \
             cmake \
@@ -51,13 +53,11 @@ RUN wget https://github.com/conda-forge/miniforge/releases/download/24.7.1-0/Min
 
 ENV CONDA_BIN_PATH="/opt/conda/bin"
 ENV PATH $CONDA_BIN_PATH:$PATH
-ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
-ENV LD_LIBRARY_PATH "/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
 
-RUN conda install mamba -n base -c conda-forge 
-
-RUN mamba create --name cellpose --yes python=3.9 pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.3 mkl==2024.0 -c pytorch -c conda-forge -c bioconda
-RUN /opt/conda/envs/cellpose/bin/pip install cellpose[gui]
+RUN conda create --name cellpose --yes python=3.10 -c conda-forge  && \
+    conda run --name cellpose python -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
+    conda run --name cellpose python -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 && \
+    conda run --name cellpose python -m pip install cellpose[gui]==3.1.1.2 
 
 COPY download_cellpose_models.py /
 RUN /opt/conda/envs/cellpose/bin/python /download_cellpose_models.py
@@ -70,8 +70,10 @@ RUN chmod +x /startapp.sh
 ENV APP_NAME="Cellpose"
 
 ENV KEEP_APP_RUNNING=0
-
 ENV TAKE_CONFIG_OWNERSHIP=1
+ENV HOME=/config
+
+COPY rc.xml.template /opt/base/etc/openbox/rc.xml.template
 
 WORKDIR /config
 

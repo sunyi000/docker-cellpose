@@ -57,7 +57,7 @@ ENV PATH $CONDA_BIN_PATH:$PATH
 RUN conda create --name cellpose --yes python=3.10 -c conda-forge  && \
     conda run --name cellpose python -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
     conda run --name cellpose python -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 && \
-    conda run --name cellpose python -m pip install cellpose[gui]==3.1.1.2 
+    conda run --name cellpose python -m pip install cellpose[gui]==3.1.1.2 safetensors
 
 COPY download_cellpose_models.py /
 RUN /opt/conda/envs/cellpose/bin/python /download_cellpose_models.py

@@ -1,14 +1,14 @@
 FROM jlesage/baseimage-gui:ubuntu-22.04-v4.5.2 AS build
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV TZ Europe/Berlin
-ENV QT_XCB_NO_MITSHM 1
-ENV NVIDIA_VISIBLE_DEVICES "all",
-ENV NVIDIA_DRIVER_CAPABILITIES "compute,utility"
-ENV LANG en_US.UTF-8 \
-    LC_ALL en_US.UTF-8 \
-    LANGUAGE en_US:en  \
-    NUMBA_CACHE_DIR /tmp
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Berlin
+ENV QT_XCB_NO_MITSHM=1
+ENV NVIDIA_VISIBLE_DEVICES="all"
+ENV NVIDIA_DRIVER_CAPABILITIES="compute,utility"
+ENV LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    LANGUAGE=en_US:en  \
+    NUMBA_CACHE_DIR=/tmp
 #ENV HOME /config
 
 RUN apt-get update -y && apt-get install -qqy build-essential
@@ -50,9 +50,9 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && rm -f Miniconda3-latest-Linux-x86_64.sh
 
 ENV CONDA_BIN_PATH="/opt/conda/bin"
-ENV PATH $CONDA_BIN_PATH:$PATH
+ENV PATH=$CONDA_BIN_PATH:$PATH
 #ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
-ENV LD_LIBRARY_PATH "/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
+ENV LD_LIBRARY_PATH="/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
 
 RUN conda config --set channel_priority flexible && \
     echo "yes" | conda tos accept --channel https://repo.anaconda.com/pkgs/main && \

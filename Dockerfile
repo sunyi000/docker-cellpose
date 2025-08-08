@@ -12,9 +12,8 @@ ENV LANG en_US.UTF-8 \
 
 USER root
 
-RUN apt-get update -y && apt-get install -qqy build-essential 
-
-RUN apt-get install -y -q --no-install-recommends \
+RUN apt-get update -y && \
+    apt-get install -qqy build-essential \
             gcc \
             wget \
             qtcreator \
@@ -38,29 +37,21 @@ RUN apt-get install -y -q --no-install-recommends \
             libarchive-dev \
             cmake \
             libxcb-cursor0 \
-            unzip &&  apt-get clean
-
-
-RUN rm -rf /var/lib/apt/lists/* 
+            python3-minimal \
+            unzip &&  \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* 
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
 
 WORKDIR /tmp
-RUN wget https://github.com/conda-forge/miniforge/releases/download/24.7.1-0/Miniforge3-24.7.1-0-Linux-x86_64.sh\
-    && bash Miniforge3-24.7.1-0-Linux-x86_64.sh -b -p /opt/conda \
-    && rm -f Miniforge3-24.7.1-0-Linux-x86_64.sh 
 
-ENV CONDA_BIN_PATH="/opt/conda/bin"
-ENV PATH $CONDA_BIN_PATH:$PATH
-
-RUN conda create --name cellpose --yes python=3.10 -c conda-forge  && \
-    conda run --name cellpose python -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
-    conda run --name cellpose python -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 && \
-    conda run --name cellpose python -m pip install cellpose[gui]==3.1.1.2 safetensors
+RUN python -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
+    python -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 cellpose[gui]==3.1.1.2 safetensors
 
 COPY download_cellpose_models.py /
-RUN /opt/conda/envs/cellpose/bin/python /download_cellpose_models.py
+RUN python /download_cellpose_models.py
 
 EXPOSE 5800
 

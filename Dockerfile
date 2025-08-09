@@ -47,8 +47,8 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
 
 WORKDIR /tmp
 
-RUN python -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
-    python -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 cellpose[gui]==3.1.1.2 safetensors
+RUN python3 -m pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --extra-index-url https://download.pytorch.org/whl/cu118 && \
+    python3 -m pip install pyqt6==6.6.1 pyqt6-qt6==6.6.1 cellpose[gui]==3.1.1.2 safetensors
 
 COPY download_cellpose_models.py /
 RUN python /download_cellpose_models.py

@@ -526,10 +526,10 @@
   <!-- Main window should be maximized and without decoration. -->
   
   <!-- title="QuPath" matches the main window -->
-  <application title="cellpose v3.1.1.1">
+  <application title="cellpose v3.1.1.2">
     <decor>yes</decor>
     <maximized>yes</maximized>
-    <fullscreen>yes</fullscreen>
+    <!--fullscreen>yes</fullscreen-->
     <layer>below</layer>
   </application>
 

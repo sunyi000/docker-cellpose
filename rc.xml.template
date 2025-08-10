@@ -529,7 +529,7 @@
   <application title="cellpose v3.1.1.2">
     <decor>yes</decor>
     <maximized>yes</maximized>
-    <fullscreen>yes</fullscreen>
+    <!--fullscreen>yes</fullscreen-->
     <layer>below</layer>
   </application>
 
